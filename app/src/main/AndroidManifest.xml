@@ -2,14 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hookspike.ai">
 
-    <!-- Screen Overlay Permission for Floating Orb -->
+    <!-- Screen Overlay Permission -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <!-- Foreground Service Permissions -->
+    <!-- Foreground Service & Internet -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-
-    <!-- Internet Access for Render Backend -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,18 +15,13 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
 
-        <!-- Background Floating Orb Service -->
+        <!-- Background Floating Orb Service (Safe for Android 10+) -->
         <service
             android:name=".FloatingOrbService"
             android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Floating AI companion orb overlay and background audio interaction" />
-        </service>
+            android:exported="false" />
 
-        <!-- Main Launcher Screen Activity -->
+        <!-- Main Launcher Screen -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
