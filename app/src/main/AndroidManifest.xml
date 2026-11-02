@@ -13,15 +13,15 @@
         android:allowBackup="true"
         android:label="HookSpike AI"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+        android:theme="@android:style/Theme.NoTitleBar">
 
-        <!-- Background Floating Orb Service (Safe for Android 10+) -->
+        <!-- Background Floating Orb Service -->
         <service
             android:name=".FloatingOrbService"
             android:enabled="true"
             android:exported="false" />
 
-        <!-- Main Launcher Screen -->
+        <!-- Main Launcher Screen Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
