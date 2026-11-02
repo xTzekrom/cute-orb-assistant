@@ -1,5 +1,6 @@
 package com.hookspike.ai
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -10,9 +11,9 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity() {
+// Standard Activity avoids all AppCompat theme crashes
+class MainActivity : Activity() {
 
     private val overlayPermissionReqCode = 1234
 
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val descView = TextView(this).apply {
-            text = "Floating Orb Status: Ready\nTap below to activate or manage overlay permission."
+            text = "Floating Companion Orb\nTap below to activate or manage overlay permission."
             textSize = 14f
             setTextColor(android.graphics.Color.parseColor("#8E8E93"))
             gravity = Gravity.CENTER
