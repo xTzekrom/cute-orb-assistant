@@ -1,5 +1,6 @@
 package com.hookspike.ai
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -41,29 +42,38 @@ class FloatingOrbService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        startNotification()
-        setupRemoveTarget()
-        setupFloatingOrb()
+        try {
+            startNotificationSafe()
+            setupRemoveTarget()
+            setupFloatingOrb()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            stopSelf()
+        }
     }
 
-    private fun startNotification() {
-        val channelId = "hookspike_orb_service"
+    private fun startNotificationSafe() {
+        val channelId = "hookspike_orb_channel"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "HookSpike Native Companion",
+                "HookSpike Background Service",
                 NotificationManager.IMPORTANCE_LOW
-            )
-            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+            ).apply {
+                description = "HookSpike AI companion is active"
+            }
+            val manager = getSystemService(NotificationManager::class.java)
+            manager?.createNotificationChannel(channel)
         }
 
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("HookSpike Assistant")
-            .setContentText("Orb sedang beroperasi di latar belakang")
-            .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+        val notification: Notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle("HookSpike AI")
+            .setContentText("Orb companion is floating on screen")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
 
-        startForeground(101, notification)
+        startForeground(1001, notification)
     }
 
     private fun setupRemoveTarget() {
@@ -85,20 +95,19 @@ class FloatingOrbService : Service() {
 
             val crossText = TextView(context).apply {
                 text = "✕"
-                textSize = 26f
+                textSize = 24f
                 setTextColor(Color.WHITE)
                 gravity = Gravity.CENTER
             }
-            val lp = FrameLayout.LayoutParams(
+            addView(crossText, FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            addView(crossText, lp)
+            ))
             visibility = View.GONE
         }
 
         val targetParams = WindowManager.LayoutParams(
-            170, 170,
+            160, 160,
             layoutFlag,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
@@ -115,7 +124,7 @@ class FloatingOrbService : Service() {
             val outerBg = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 setColor(Color.parseColor("#18191E"))
-                setStroke(2, Color.parseColor("#343A40"))
+                setStroke(3, Color.parseColor("#2C2D35"))
             }
             background = outerBg
         }
@@ -147,7 +156,7 @@ class FloatingOrbService : Service() {
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = 750
+            x = 600
             y = 800
         }
 
@@ -180,7 +189,7 @@ class FloatingOrbService : Service() {
                     val targetX = screenWidth / 2
                     val targetY = screenHeight - 160
                     val dist = hypot((event.rawX - targetX).toDouble(), (event.rawY - targetY).toDouble())
-                    if (dist < 190) {
+                    if (dist < 180) {
                         removeTargetView.alpha = 1.0f
                         removeTargetView.scaleX = 1.25f
                         removeTargetView.scaleY = 1.25f
@@ -200,7 +209,7 @@ class FloatingOrbService : Service() {
                     val targetX = screenWidth / 2
                     val targetY = screenHeight - 160
                     val dist = hypot((event.rawX - targetX).toDouble(), (event.rawY - targetY).toDouble())
-                    if (dist < 190) {
+                    if (dist < 180) {
                         stopSelf()
                         return@setOnTouchListener true
                     }
